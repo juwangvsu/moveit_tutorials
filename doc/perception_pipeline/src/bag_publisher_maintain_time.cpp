@@ -43,20 +43,33 @@
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "bag_publisher_maintain_time");
-  ros::NodeHandle nh;
+  ros::NodeHandle nh("~");
 
-  ros::Publisher point_cloud_publisher = nh.advertise<sensor_msgs::PointCloud2>("/camera/depth_registered/points", 1);
-  ros::Rate loop_rate(0.1);
+  ros::Publisher point_cloud_publisher = nh.advertise<sensor_msgs::PointCloud2>("/camera/depth/points", 1);
+  ros::Rate loop_rate(1.1);
 
   // Variable holding the rosbag containing point cloud data.
   rosbag::Bag bagfile;
   std::string path = ros::package::getPath("moveit_tutorials");
   path += "/doc/perception_pipeline/bags/perception_tutorial.bag";
+if (nh.getParam("bagfilen", path))
+{
+    std::cout<< " bag file name: " << path<<std::endl; 
+}
   bagfile.open(path, rosbag::bagmode::Read);
 
   std::vector<std::string> topics;
-  topics.push_back("/camera/depth_registered/points");
-
+  std::string pc2intopic="/camera/depth_registered/points";
+if (nh.getParam("pc2intopic", pc2intopic))
+{
+    std::cout<< " point cloud topic in bag file : " << pc2intopic<<std::endl; 
+}
+  topics.push_back(pc2intopic);
+std::string pcframeid, default_param;
+if (nh.getParam("pcframeid", pcframeid))
+{
+    std::cout<< " point cloud frame id will be set to: " << pcframeid<<std::endl; 
+}
   // Iterator for topics in bag.
   rosbag::View bagtopics_iter(bagfile, rosbag::TopicQuery(topics));
 
@@ -68,10 +81,14 @@ int main(int argc, char** argv)
       std::cout << "error" << std::endl;
       break;
     }
-
-    while (ros::ok())
+    int seq=0;
+    if (ros::ok())
     {
+	    seq++;
+	    std::cout<<"publishing pc2 seq# "<<seq <<"\n";
       point_cloud_ptr->header.stamp = ros::Time::now();
+      point_cloud_ptr->header.seq = seq;
+      point_cloud_ptr->header.frame_id = pcframeid;
       point_cloud_publisher.publish(*point_cloud_ptr);
       ros::spinOnce();
       loop_rate.sleep();

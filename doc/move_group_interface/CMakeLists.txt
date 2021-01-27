@@ -1,5 +1,7 @@
 add_executable(move_group_interface_tutorial src/move_group_interface_tutorial.cpp)
+add_executable(move_group_interface_tutorial_airsim src/move_group_interface_tutorial_airsim.cpp)
 target_link_libraries(move_group_interface_tutorial ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS move_group_interface_tutorial DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+target_link_libraries(move_group_interface_tutorial_airsim ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS move_group_interface_tutorial move_group_interface_tutorial_airsim DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
