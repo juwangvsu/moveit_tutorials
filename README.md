@@ -1,3 +1,7 @@
+-------------------------new nodes ---------------------------
+move_group_interface_tutorial_airsim node, test the move group plan service, allow specify start, target pose
+
+-------------------------below original readme------------------------------------------------------------------------
 # MoveIt! Tutorials
 
 [https://ros-planning.github.io/moveit_tutorials/](https://ros-planning.github.io/moveit_tutorials/)
